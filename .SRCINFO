@@ -4,6 +4,12 @@ pkgbase = glib2-git
 	pkgrel = 1
 	url = https://wiki.gnome.org/Projects/GLib
 	arch = x86_64
+	arch = i686
+	arch = pentium4
+	arch = arm
+	arch = armv7h
+	arch = aarch64
+	arch = powerpc
 	license = LGPL2.1
 	checkdepends = desktop-file-utils
 	makedepends = gettext
@@ -24,11 +30,13 @@ pkgbase = glib2-git
 	optdepends = python: gdbus-codegen, glib-genmarshal, glib-mkenums, gtester-report
 	optdepends = libelf: gresource inspection tool
 	provides = glib2=2.78.0.r212.g0a6e19f
+	provides = glib=2.78.0.r212.g0a6e19f
 	conflicts = glib2
+	conflicts = glib
 	options = debug
 	options = staticlibs
-	source = git+https://gitlab.gnome.org/GNOME/glib.git
-	source = git+https://gitlab.gnome.org/GNOME/gvdb.git
+	source = git+file:///data/data/com.termux/files/home/glib
+	source = git+/data/data/com.termux/files/home/gvdb
 	source = 0001-noisy-glib-compile-schemas.patch
 	source = glib-compile-schemas.hook
 	source = gio-querymodules.hook
@@ -47,6 +55,7 @@ pkgname = glib2-git
 	depends = libffi.so
 	depends = libmount.so
 	provides = glib2=2.78.0.r212.g0a6e19f
+	provides = glib=2.78.0.r212.g0a6e19f
 	provides = libgio-2.0.so
 	provides = libglib-2.0.so
 	provides = libgmodule-2.0.so
@@ -60,4 +69,6 @@ pkgname = glib2-docs-git
 	depends = 
 	optdepends = 
 	provides = glib2-docs
+	provides = glib-docs
 	conflicts = glib2-docs
+	conflicts = glib-docs
