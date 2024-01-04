@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0
+#
 # Maintainer: Limao Luo <luolimao+AUR@gmail.com>
 # Contributor: Yichao Yu <yyc1992@gmail.com>
 # Contributor: kfgz <kfgz@interia.pl>
