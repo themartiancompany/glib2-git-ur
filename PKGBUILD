@@ -44,6 +44,7 @@ makedepends=(
   meson
   dbus
   gi-docgen
+  "${_py}-docutils"
 )
 checkdepends=(
   desktop-file-utils
@@ -122,7 +123,7 @@ _meson_options=(
   --default-library both
   -D glib_debug=disabled
   -D documentation=false
-  -D man-pages=enabled
+  -D man-pages=disabled
   -D selinux=disabled
   -D sysprof=disabled
 )
@@ -130,7 +131,7 @@ _meson_options=(
 _cflags=(
   "-I$( \
     dirname \
-      "$(cc \
+      "$(gcc \
            -v 2>&1 |
            grep \
              "InstalledDir" | \
@@ -148,12 +149,14 @@ build () {
   CXXFLAGS+=" -ffat-lto-objects"
 
   CC="gcc" \
+  CXX="g++" \
   CFLAGS="${_cflags[@]}" \
     arch-meson \
       "${_pkg}" \
       build \
       "${_meson_options[@]}"
   CC="gcc" \
+  CXX="g++" \
   CFLAGS="${_cflags[@]}" \
     meson \
       compile \
