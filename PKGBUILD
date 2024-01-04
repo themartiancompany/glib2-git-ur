@@ -71,7 +71,7 @@ source=(
   # "git+${_url}.git"
   "git+${_local}"
   # "git+${_http}/${_ns}/gvdb.git"
-  "git+${HOME}/gvdb"
+  "git+${_local_gvdb}"
   0001-noisy-glib-compile-schemas.patch
   glib-compile-schemas.hook
   gio-querymodules.hook
