@@ -122,7 +122,7 @@ _meson_options=(
   --default-library both
   -D glib_debug=disabled
   -D documentation=false
-  -D man_pages=enabled
+  -D man-pages=enabled
   -D selinux=disabled
   -D sysprof=disabled
 )
@@ -185,7 +185,7 @@ package_glib2-git() {
       install \
       -C build
 
-  if [[ " ${buildmodes[*]} " =~ ' dongle ' ]]; then
+  if [[ " ${_meson_options[*]} " =~ ' documentation=true ' ]]; then
     mv \
       "${pkgdir}/usr/share/gtk-doc" \
       "${srcdir}"
@@ -217,16 +217,18 @@ package_glib2-docs-git() {
   license+=(
     custom)
 
-  mkdir \
-    -p \
-    "${pkgdir}/usr/share"
-  mv \
-    gtk-doc \
-    "${pkgdir}/usr/share"
+  if [[ " ${_meson_options[*]} " =~ ' documentation=true ' ]]; then
+    mkdir \
+      -p \
+      "${pkgdir}/usr/share"
+    mv \
+      gtk-doc \
+      "${pkgdir}/usr/share"
 
-  install \
-    -Dt "${pkgdir}/usr/share/licenses/glib2-docs" \
-    -m644 glib/docs/reference/COPYING
+    install \
+      -Dt "${pkgdir}/usr/share/licenses/glib2-docs" \
+      -m644 glib/docs/reference/COPYING
+  fi
 }
 
 # vim:set sw=2 sts=-1 et:
