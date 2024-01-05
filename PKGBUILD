@@ -88,7 +88,7 @@ sha512sums=(
 
 pkgver() {
   cd \
-    glib
+    "${_pkg}"
   git \
     describe \
     --long \
@@ -130,18 +130,32 @@ _meson_options=(
   -D sysprof=disabled
 )
 
-_cflags=(
-  "-I$( \
-    dirname \
-      "$(gcc \
-           -v 2>&1 |
-           grep \
-             "InstalledDir" | \
-             awk '{print $2}')")/include"
-  "${CFLAGS}"
-  "-ffat-lto-objects"
-  "-g3"
-)
+_flags() {
+  _cflags=()
+  local \
+    _bin \
+    _include
+  _bin="$( \
+    cc \
+     -v 2>&1 |
+     grep \
+       "InstalledDir" | \
+       awk '{print $2}')"
+  if [[ "${_bin}" == "" ]]; then
+    _bin="$( \
+      command \
+        -v \
+        gcc)" fi
+  if [[  "${_bin}" != "" ]]; then
+    _cflags=(
+      "-I$( \
+        dirname \
+          "${_bin}")/include") fi
+  _cflags+=(
+    "${CFLAGS}"
+    "-ffat-lto-objects"
+    "-g3")
+}
 
 build () {
   # Produce more debug info: GLib has a lot of useful macros
@@ -149,6 +163,8 @@ build () {
 
   # use fat LTO objects for static libraries
   CXXFLAGS+=" -ffat-lto-objects"
+
+  _flags
 
   CC="gcc" \
   CXX="g++" \
