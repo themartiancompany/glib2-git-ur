@@ -143,14 +143,17 @@ _flags() {
        awk '{print $2}')"
   if [[ "${_bin}" == "" ]]; then
     _bin="$( \
-      command \
-        -v \
-        gcc)" fi
-  if [[  "${_bin}" != "" ]]; then
-    _cflags=(
-      "-I$( \
-        dirname \
-          "${_bin}")/include") fi
+      dirname \
+      "$(command \
+          -v \
+          gcc)")"
+  fi
+  if [[ "${_bin}" != "" ]]; then
+    _include="$( \
+      dirname \
+        "${_bin}")/include"
+    _cflags+=" -I${_include}"
+  fi
   _cflags+=(
     "${CFLAGS}"
     "-ffat-lto-objects"
