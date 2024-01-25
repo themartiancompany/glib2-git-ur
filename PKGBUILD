@@ -8,6 +8,7 @@
 
 _checks="false"
 _docs="false"
+_libmount="enabled"
 _py='python'
 _pkg="glib"
 _pkgname="${_pkg}2"
@@ -62,7 +63,7 @@ checkdepends=(
   desktop-file-utils
 )
 optdepends=(
-  "${_py}: gdbus-codegen, glib-genmarshal, glib-mkenums, gtester-report"
+  "${_py}: gdbus-codegen, ${_pkg}-genmarshal, ${_pkg}-mkenums, gtester-report"
   "libelf: gresource inspection tool"
 )
 conflicts=(
@@ -85,8 +86,8 @@ source=(
   "git+${_local}"
   # "git+${_http}/${_ns}/gvdb.git"
   "git+${_local_gvdb}"
-  0001-noisy-glib-compile-schemas.patch
-  glib-compile-schemas.hook
+  "0001-noisy-${_pkg}-compile-schemas.patch"
+  "${_pkg}-compile-schemas.hook"  
   gio-querymodules.hook
 )
 sha512sums=(
@@ -142,8 +143,9 @@ prepare() {
 
 _meson_options=(
   --default-library both
-  -D glib_debug="${_checks}"
+  -D "${_pkg}"_debug="${_checks}"
   -D documentation="${_docs}"
+  -D libmount="${_libmount}"
   -D man-pages="${_docs}"
   -D selinux=disabled
   -D sysprof="${_checks}"
@@ -215,14 +217,17 @@ package_glib2-git() {
   _codegen="/usr/share/glib-2.0/codegen"
   provides+=(
     libgio-2.0.so
-    libglib-2.0.so
+    "lib${_pkg}-2.0.so=${pkgver}"
     libgmodule-2.0.so
     libgobject-2.0.so
     libgthread-2.0.so)
   depends+=(
     libffi.so
-    libmount.so
   )
+  [[ "libmount" == "enabled" ]] && \
+    depends+=(
+      libmount.so
+    )
   DESTDIR="${pkgdir}" \
     meson \
       install \
