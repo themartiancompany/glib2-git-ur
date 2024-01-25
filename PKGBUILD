@@ -177,54 +177,55 @@ _flags() {
   fi
   _cflags+=(
     "${CFLAGS}"
+    # use fat LTO objects
+    # for static libraries
     "-ffat-lto-objects"
-    "-g3")
+    # Produce more debug info: 
+    # GLib has a lot of useful macros
+    "-g3"
+  )
 }
 
 build () {
-  # Produce more debug info: GLib has a lot of useful macros
-  CXXFLAGS+=" -g3"
-
-  # use fat LTO objects for static libraries
-  CXXFLAGS+=" -ffat-lto-objects"
-
   _flags
-
-  CC="gcc" \
-  CXX="g++" \
+  # CC="gcc" \
+  # CXX="g++" \
   CFLAGS="${_cflags[@]}" \
     arch-meson \
       "${_pkg}" \
       build \
       "${_meson_options[@]}"
-  CC="gcc" \
-  CXX="g++" \
+  # CC="gcc" \
+  # CXX="g++" \
   CFLAGS="${_cflags[@]}" \
     meson \
       compile \
-      -C build
+      -C \
+        build
 }
 
 check() {
   meson \
     test \
-    -C build
+    -C \
+      build
 }
 
 package_glib2-git() {
   local \
     _codegen
-  _codegen="/usr/share/glib-2.0/codegen"
+  _codegen="/usr/share/${_pkg}-2.0/codegen"
   provides+=(
     libgio-2.0.so
     "lib${_pkg}-2.0.so=${pkgver}"
     libgmodule-2.0.so
     libgobject-2.0.so
-    libgthread-2.0.so)
+    libgthread-2.0.so
+  )
   depends+=(
     libffi.so
   )
-  [[ "libmount" == "enabled" ]] && \
+  [[ "${_libmount}" == "enabled" ]] && \
     depends+=(
       libmount.so
     )
