@@ -3,16 +3,22 @@
 # Maintainer: Limao Luo <luolimao+AUR@gmail.com>
 # Contributor: Yichao Yu <yyc1992@gmail.com>
 # Contributor: kfgz <kfgz@interia.pl>
-# Contributor: Pellegrino Prevete <pellegrinoprevete@gmail.com>
+# Contributor: Pellegrino Prevete (dvorak) <pellegrinoprevete@gmail.com>
 # Contributor: Truocolo <truocolo@aol.com>
 
-_pkg=glib
+_checks="false"
+_docs="false"
+_py='python'
+_pkg="glib"
 _pkgname="${_pkg}2"
 pkgbase="${_pkgname}-git"
 pkgname=(
   "${pkgbase}"
-  "${_pkgname}-docs-git")
-_py='python'
+)
+[[ "${_docs}" == "true" ]] && \
+  pkgname+=(
+    "${_pkgname}-docs-git"
+  )
 pkgver=2.78.0.r212.g0a6e19f
 pkgrel=1
 pkgdesc="Low Level Core Library"
@@ -27,7 +33,8 @@ arch=(
 )
 url="https://wiki.gnome.org/Projects/GLib"
 license=(
-  LGPL2.1)
+  LGPL2.1
+)
 depends=(
   pcre
   libffi
@@ -36,17 +43,20 @@ depends=(
   libsysprof-capture
 )
 makedepends=(
+  dbus
   gettext
-  gtk-doc
+  git
+  libelf
+  meson
   shared-mime-info
   "${_py}"
-  libelf
-  git
   util-linux
-  meson
-  dbus
-  gi-docgen
-  "${_py}-docutils"
+)
+[[ "${_docs}" == "true" ]] && \
+  makedepends+=(
+    'gi-docgen'
+    'gtk-doc'
+    "${_py}-docutils"
 )
 checkdepends=(
   desktop-file-utils
@@ -98,6 +108,15 @@ pkgver() {
       's/\([^-]*-g\)/r\1/;s/-/./g'
 }
 
+_prefix="$( \
+  dirname \
+    "$( \
+      dirname \
+        "$( \
+          command \
+            -v \
+            "cc")")")"
+
 prepare() {
   cd \
     "${srcdir}/${_pkg}"
@@ -123,11 +142,11 @@ prepare() {
 
 _meson_options=(
   --default-library both
-  -D glib_debug=disabled
-  -D documentation=false
-  -D man-pages=disabled
+  -D glib_debug="${_checks}"
+  -D documentation="${_docs}"
+  -D man-pages="${_docs}"
   -D selinux=disabled
-  -D sysprof=disabled
+  -D sysprof="${_checks}"
 )
 
 _flags() {
@@ -208,7 +227,15 @@ package_glib2-git() {
     meson \
       install \
       -C build
-
+  for _f  \
+    in \
+      find \
+        "${pkgdir}/usr/lib/pkgconfig"; do
+    sed \
+      -i
+      "s%prefix=/usr%prefix=${_prefix}%"
+      "${_f}"
+  done
   if [[ " ${_meson_options[*]} " =~ ' documentation=true ' ]]; then
     mv \
       "${pkgdir}/usr/share/gtk-doc" \
