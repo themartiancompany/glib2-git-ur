@@ -205,11 +205,11 @@ build () {
       -C build
 }
 
-#check() {
-#  meson \
-#    test \
-#    -C build
-#}
+check() {
+  meson \
+    test \
+    -C build
+}
 
 package_glib2-git() {
   local \
