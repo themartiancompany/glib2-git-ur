@@ -21,6 +21,7 @@ pkgname=(
     "${_pkgname}-docs-git"
   )
 pkgver=2.78.0.r212.g0a6e19f
+_abiver="2.0"
 pkgrel=1
 pkgdesc="Low Level Core Library"
 arch=(
@@ -214,13 +215,13 @@ check() {
 package_glib2-git() {
   local \
     _codegen
-  _codegen="/usr/share/${_pkg}-2.0/codegen"
+  _codegen="/usr/share/${_pkg}-${_abiver}/codegen"
   provides+=(
-    libgio-2.0.so
-    "lib${_pkg}-2.0.so=${pkgver}"
-    libgmodule-2.0.so
-    libgobject-2.0.so
-    libgthread-2.0.so
+    "libgio-${_abiver}.so"
+    "lib${_pkg}-${_abiver}.so=${pkgver}"
+    "libgmodule-${_abiver}.so"
+    "libgobject-${_abiver}.so"
+    "libgthread-${_abiver}.so"
   )
   depends+=(
     libffi.so
@@ -284,8 +285,8 @@ package_glib2-docs-git() {
       "${pkgdir}/usr/share"
 
     install \
-      -Dt "${pkgdir}/usr/share/licenses/glib2-docs" \
-      -m644 glib/docs/reference/COPYING
+      -Dt "${pkgdir}/usr/share/licenses/${_pkgname}-docs" \
+      -m644 "${_pkg}/docs/reference/COPYING"
   fi
 }
 
