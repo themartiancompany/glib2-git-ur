@@ -235,11 +235,12 @@ package_glib2-git() {
       -C build
   for _f  \
     in \
-      find \
-        "${pkgdir}/usr/lib/pkgconfig"; do
+      $( \
+        find \
+          "${pkgdir}/usr/lib/pkgconfig"); do
     sed \
-      -i
-      "s%prefix=/usr%prefix=${_prefix}%"
+      -i \
+      "s%prefix=/usr%prefix=${_prefix}%" \
       "${_f}"
   done
   if [[ " ${_meson_options[*]} " =~ ' documentation=true ' ]]; then
